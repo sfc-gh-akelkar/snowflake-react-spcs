@@ -13,109 +13,9 @@ By the end of this quickstart, you'll:
 
 - **Snowflake account** with ACCOUNTADMIN access
 - **VS Code** installed ([download](https://code.visualstudio.com/))
-- **Docker Desktop** installed and running ([download](https://www.docker.com/products/docker-desktop/))
 - **Python 3.10+** installed
 - **Node.js 18+** (for local development)
-
----
-
-## Quick Start with VS Code DevContainer (Recommended)
-
-The fastest way to get started is using VS Code's DevContainer feature, which provides a fully configured development environment with all tools pre-installed.
-
-### Step 1: Install VS Code Extensions
-
-Install the **Dev Containers** extension:
-1. Open VS Code
-2. Press `Cmd+Shift+X` (macOS) or `Ctrl+Shift+X` (Windows/Linux)
-3. Search for "Dev Containers" and install the Microsoft extension
-
-### Step 2: Clone and Open in Container
-
-```bash
-git clone https://github.com/sfc-gh-akelkar/snowflake-react-spcs.git
-code snowflake-react-spcs
-```
-
-When VS Code opens, you'll see a popup: **"Reopen in Container"** – click it.
-
-Or use the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`):
-```
-> Dev Containers: Reopen in Container
-```
-
-### Step 3: Wait for Setup
-
-The DevContainer will:
-- Install Node.js 20, Python 3.10, and Docker
-- Install Snow CLI and Cortex Code CLI
-- Install all frontend and backend dependencies
-- Mount your `~/.snowflake` config (if it exists)
-
-This takes 2-3 minutes the first time.
-
-### Step 4: Start Using Cortex Code
-
-Once the container is ready, open a terminal (`Ctrl+`` `) and run:
-
-```bash
-cortex
-```
-
-You're now in an AI-powered coding session connected to Snowflake!
-
-> **Note:** If you haven't configured a Snowflake connection yet, see [Section 0](#0-installing-snowflake-cli-and-cortex-code-cli) below.
-
----
-
-## VS Code Setup (Without DevContainer)
-
-If you prefer to work locally without DevContainer, install these extensions:
-
-### Recommended Extensions
-
-When you open the project, VS Code will prompt you to install recommended extensions. Or install manually:
-
-| Extension | Purpose |
-|-----------|---------|
-| **Snowflake** (`snowflake.snowflake-vsc`) | Run SQL, browse objects, view results |
-| **Python** (`ms-python.python`) | Python IntelliSense and debugging |
-| **Pylance** (`ms-python.vscode-pylance`) | Fast Python language server |
-| **ESLint** (`dbaeumer.vscode-eslint`) | JavaScript/React linting |
-| **Prettier** (`esbenp.prettier-vscode`) | Code formatting |
-| **Docker** (`ms-azuretools.vscode-docker`) | Dockerfile support, container management |
-
-Install all at once via Command Palette:
-```
-> Extensions: Show Recommended Extensions
-```
-
-### Using the Snowflake Extension
-
-1. Click the Snowflake icon in the sidebar
-2. Click **"Add Connection"** and enter your credentials
-3. Browse databases, schemas, and tables visually
-4. Run SQL directly in VS Code with `Cmd+Enter` / `Ctrl+Enter`
-
-### Running Cortex Code in VS Code Terminal
-
-Open the integrated terminal (`Ctrl+`` `) and run:
-
-```bash
-cortex
-```
-
-**Pro tip:** Use VS Code's split terminal to have Cortex Code open alongside your regular shell:
-- `Cmd+\` (macOS) or `Ctrl+\` (Windows/Linux) to split
-- Run `cortex` in one pane, use the other for git/npm/docker commands
-
-### Debugging with VS Code
-
-The project includes debug configurations. Press `F5` or go to **Run and Debug** to see:
-
-- **Backend: FastAPI** – Debug the Python API with breakpoints
-- **Frontend: Vite Dev** – Debug the React app
-- **Full Stack** – Launch both simultaneously
+- **Docker Desktop** (for deployment to SPCS)
 
 ---
 
@@ -308,6 +208,57 @@ chmod +x /usr/local/bin/cortex
 Invoke-WebRequest -Uri "https://downloads.snowflake.com/cortex-code/latest/cortex-win-x64.exe" -OutFile "$env:LOCALAPPDATA\Programs\cortex.exe"
 # Add to PATH or run from that location
 ```
+
+---
+
+## VS Code Setup
+
+Open the project in VS Code and install recommended extensions for the best experience.
+
+### Recommended Extensions
+
+When you open the project, VS Code will prompt you to install recommended extensions. Or install manually:
+
+| Extension | Purpose |
+|-----------|---------|
+| **Snowflake** (`snowflake.snowflake-vsc`) | Run SQL, browse objects, view results |
+| **Python** (`ms-python.python`) | Python IntelliSense and debugging |
+| **Pylance** (`ms-python.vscode-pylance`) | Fast Python language server |
+| **ESLint** (`dbaeumer.vscode-eslint`) | JavaScript/React linting |
+| **Prettier** (`esbenp.prettier-vscode`) | Code formatting |
+| **Docker** (`ms-azuretools.vscode-docker`) | Dockerfile support, container management |
+
+Install all at once via Command Palette:
+```
+> Extensions: Show Recommended Extensions
+```
+
+### Using the Snowflake Extension
+
+1. Click the Snowflake icon in the sidebar
+2. Click **"Add Connection"** and enter your credentials
+3. Browse databases, schemas, and tables visually
+4. Run SQL directly in VS Code with `Cmd+Enter` / `Ctrl+Enter`
+
+### Running Cortex Code in VS Code Terminal
+
+Open the integrated terminal (`` Ctrl+` ``) and run:
+
+```bash
+cortex
+```
+
+**Pro tip:** Use VS Code's split terminal to have Cortex Code open alongside your regular shell:
+- `Cmd+\` (macOS) or `Ctrl+\` (Windows/Linux) to split
+- Run `cortex` in one pane, use the other for git/npm/docker commands
+
+### Debugging with VS Code
+
+The project includes debug configurations. Press `F5` or go to **Run and Debug** to see:
+
+- **Backend: FastAPI** – Debug the Python API with breakpoints
+- **Frontend: Vite Dev** – Debug the React app
+- **Full Stack** – Launch both simultaneously
 
 ---
 
@@ -604,6 +555,35 @@ Now that you've built and deployed your first app, try these extensions:
 | `#TABLE_NAME` | Quick table inspection |
 | `/help` | Get help within CoCo |
 | `/clear` | Clear conversation history |
+
+---
+
+## Alternative: DevContainer for Workshops
+
+If you're running a workshop or want a fully isolated development environment, use VS Code's DevContainer feature. This provides a pre-configured environment with all tools installed.
+
+### Setup
+
+1. Install the **Dev Containers** extension in VS Code
+2. Clone and open the project:
+   ```bash
+   git clone https://github.com/sfc-gh-akelkar/snowflake-react-spcs.git
+   code snowflake-react-spcs
+   ```
+3. When prompted, click **"Reopen in Container"** (or use Command Palette: `Dev Containers: Reopen in Container`)
+4. Wait 2-3 minutes for the container to build
+
+### What's Included
+
+The DevContainer automatically:
+- Installs Node.js 20, Python 3.10, and Docker
+- Installs Snow CLI and Cortex Code CLI
+- Installs all frontend and backend dependencies
+- Mounts your `~/.snowflake` config (if it exists)
+
+Once ready, open a terminal and run `cortex` to start.
+
+> **Note:** DevContainers require Docker Desktop to be running.
 
 ---
 
