@@ -13,8 +13,104 @@ By the end of this quickstart, you'll:
 
 - **Snowflake account** with ACCOUNTADMIN access
 - **Docker Desktop** installed and running
-- **Cortex Code CLI** installed (`npm install -g @anthropic-ai/cortex-code`)
+- **Python 3.10+** installed
 - **Node.js 18+** (for local development)
+
+---
+
+## 0. Installing Snowflake CLI and Cortex Code CLI
+
+Before we begin, you'll need to install the Snowflake CLI (Snow CLI) and Cortex Code CLI.
+
+### Step 1: Install Snow CLI
+
+Snow CLI is Snowflake's command-line tool for managing Snowflake resources.
+
+**macOS / Linux:**
+```bash
+pip install snowflake-cli
+```
+
+**Windows:**
+```bash
+pip install snowflake-cli
+```
+
+Verify the installation:
+```bash
+snow --version
+```
+
+### Step 2: Configure a Snowflake Connection
+
+Create a connection to your Snowflake account:
+
+```bash
+snow connection add
+```
+
+You'll be prompted for:
+- **Connection name**: A friendly name (e.g., `my-account`)
+- **Account identifier**: Your Snowflake account (e.g., `abc12345.us-east-1`)
+- **User**: Your Snowflake username
+- **Password**: Your Snowflake password (or choose a different authenticator)
+- **Role**: `ACCOUNTADMIN` (or your preferred role)
+- **Warehouse**: `COMPUTE_WH` (or your preferred warehouse)
+- **Database**: `SNOWFLAKE_SAMPLE_DATA` (optional)
+- **Schema**: `TPCH_SF1` (optional)
+
+Test the connection:
+```bash
+snow connection test -c my-account
+```
+
+Set it as your default connection:
+```bash
+snow connection set-default my-account
+```
+
+### Step 3: Install Cortex Code CLI
+
+Cortex Code CLI (CoCo) is an AI-powered coding assistant that integrates with Snowflake.
+
+```bash
+snow cortex code install
+```
+
+This downloads and installs the Cortex Code CLI binary.
+
+Verify the installation:
+```bash
+cortex --version
+```
+
+### Alternative: Manual Installation
+
+If the `snow cortex code install` command isn't available, you can install manually:
+
+**macOS (Apple Silicon):**
+```bash
+curl -fsSL https://downloads.snowflake.com/cortex-code/latest/cortex-darwin-arm64 -o /usr/local/bin/cortex
+chmod +x /usr/local/bin/cortex
+```
+
+**macOS (Intel):**
+```bash
+curl -fsSL https://downloads.snowflake.com/cortex-code/latest/cortex-darwin-x64 -o /usr/local/bin/cortex
+chmod +x /usr/local/bin/cortex
+```
+
+**Linux:**
+```bash
+curl -fsSL https://downloads.snowflake.com/cortex-code/latest/cortex-linux-x64 -o /usr/local/bin/cortex
+chmod +x /usr/local/bin/cortex
+```
+
+**Windows (PowerShell as Administrator):**
+```powershell
+Invoke-WebRequest -Uri "https://downloads.snowflake.com/cortex-code/latest/cortex-win-x64.exe" -OutFile "$env:LOCALAPPDATA\Programs\cortex.exe"
+# Add to PATH or run from that location
+```
 
 ---
 
