@@ -16,9 +16,14 @@ build/
 
 # IDE
 .idea/
-.vscode/
 *.swp
 *.swo
+
+# VS Code - ignore user-specific, keep shared configs
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
 
 # OS
 .DS_Store

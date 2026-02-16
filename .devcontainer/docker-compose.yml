@@ -1,0 +1,11 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - ~/.snowflake:/home/vscode/.snowflake:cached
+    command: sleep infinity
+    environment:
+      - SNOWFLAKE_CONFIG_PATH=/home/vscode/.snowflake/config.toml
