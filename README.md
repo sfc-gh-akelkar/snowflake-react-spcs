@@ -69,6 +69,102 @@ Set it as your default connection:
 snow connection set-default my-account
 ```
 
+### Step 2b: Configure Key-Pair Authentication (Recommended)
+
+Key-pair authentication is more secure than password authentication and is recommended for production use.
+
+#### Generate an RSA Key Pair
+
+```bash
+# Create a directory for your keys
+mkdir -p ~/.snowflake/keys
+
+# Generate a private key (no passphrase for simplicity, or add -aes256 for encrypted)
+openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out ~/.snowflake/keys/rsa_key.p8 -nocrypt
+
+# Generate the public key
+openssl rsa -in ~/.snowflake/keys/rsa_key.p8 -pubout -out ~/.snowflake/keys/rsa_key.pub
+
+# Set secure permissions
+chmod 600 ~/.snowflake/keys/rsa_key.p8
+```
+
+#### Register the Public Key in Snowflake
+
+Copy your public key (without the header/footer lines):
+
+```bash
+cat ~/.snowflake/keys/rsa_key.pub | grep -v "PUBLIC KEY" | tr -d '\n'
+```
+
+Then run this SQL in Snowflake (Snowsight or SnowSQL):
+
+```sql
+ALTER USER your_username SET RSA_PUBLIC_KEY='MIIBIjANBgkqh...your-key-here...';
+```
+
+#### Configure Snow CLI with Key-Pair Auth
+
+Add a new connection using key-pair authentication:
+
+```bash
+snow connection add \
+  --connection-name my-account-keypair \
+  --account abc12345.us-east-1 \
+  --user your_username \
+  --authenticator SNOWFLAKE_JWT \
+  --private-key-file ~/.snowflake/keys/rsa_key.p8 \
+  --role ACCOUNTADMIN \
+  --warehouse COMPUTE_WH \
+  --database SNOWFLAKE_SAMPLE_DATA \
+  --schema TPCH_SF1
+```
+
+Or edit `~/.snowflake/config.toml` directly:
+
+```toml
+[connections.my-account-keypair]
+account = "abc12345.us-east-1"
+user = "your_username"
+authenticator = "SNOWFLAKE_JWT"
+private_key_file = "~/.snowflake/keys/rsa_key.p8"
+role = "ACCOUNTADMIN"
+warehouse = "COMPUTE_WH"
+database = "SNOWFLAKE_SAMPLE_DATA"
+schema = "TPCH_SF1"
+```
+
+Test and set as default:
+
+```bash
+snow connection test -c my-account-keypair
+snow connection set-default my-account-keypair
+```
+
+#### Using an Encrypted Private Key (Optional)
+
+For additional security, you can encrypt your private key with a passphrase:
+
+```bash
+# Generate an encrypted private key
+openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out ~/.snowflake/keys/rsa_key_encrypted.p8 -v2 aes256
+```
+
+Then add `private_key_file_pwd` to your connection or set the environment variable:
+
+```bash
+export PRIVATE_KEY_PASSPHRASE='your-passphrase'
+```
+
+Or in `config.toml`:
+
+```toml
+[connections.my-account-keypair]
+# ... other settings ...
+private_key_file = "~/.snowflake/keys/rsa_key_encrypted.p8"
+private_key_file_pwd = "your-passphrase"  # Or use env var for security
+```
+
 ### Step 3: Install Cortex Code CLI
 
 Cortex Code CLI (CoCo) is an AI-powered coding assistant that integrates with Snowflake.
