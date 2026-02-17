@@ -27,14 +27,10 @@ Before we begin, you'll need to install Cortex Code CLI and configure a Snowflak
 
 Cortex Code CLI (CoCo) is an AI-powered coding assistant that integrates with Snowflake.
 
-**macOS / Linux:**
+**Supported environments:** macOS (Apple Silicon), Linux (Intel), or Windows Subsystem for Linux (WSL)
+
 ```bash
 curl -LsS https://ai.snowflake.com/static/cc-scripts/install.sh | sh
-```
-
-**Windows (PowerShell):**
-```powershell
-irm https://ai.snowflake.com/static/cc-scripts/install.ps1 | iex
 ```
 
 Verify the installation:
