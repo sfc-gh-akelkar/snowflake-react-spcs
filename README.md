@@ -13,7 +13,10 @@ By the end of this quickstart, you'll:
 
 - **Snowflake account** with ACCOUNTADMIN access
 - **Docker Desktop** installed and running ([download](https://www.docker.com/products/docker-desktop))
-- **Python 3.8+** (for installing Snow CLI)
+- **Snow CLI** installed:
+  ```bash
+  pip install snowflake-cli
+  ```
 
 ---
 
@@ -181,15 +184,7 @@ CoCo will analyze the error, identify the root cause, and fix the code.
 
 **What you'll learn:** How to deploy containerized apps to Snowpark Container Services using CoCo.
 
-### Prerequisites for Deployment
-
-Before deploying, ensure **Docker Desktop** is running and **Snow CLI** is installed:
-
-```bash
-pip install snowflake-cli
-```
-
-**If using key-pair authentication**, your `~/.snowflake/connections.toml` must have:
+**If using key-pair authentication**, ensure your `~/.snowflake/connections.toml` has:
 ```toml
 [connections.my-connection]
 account = "your-account"
