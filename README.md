@@ -12,10 +12,8 @@ By the end of this quickstart, you'll:
 ## Prerequisites
 
 - **Snowflake account** with ACCOUNTADMIN access
-- **VS Code** installed ([download](https://code.visualstudio.com/))
-- **Python 3.10+** installed
-- **Node.js 18+** (for local development)
-- **Docker Desktop** (for deployment to SPCS)
+- **Docker Desktop** installed and running ([download](https://www.docker.com/products/docker-desktop))
+- **Python 3.8+** (for installing Snow CLI)
 
 ---
 
