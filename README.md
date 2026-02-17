@@ -181,7 +181,7 @@ CoCo will analyze the error, identify the root cause, and fix the code.
 
 ## 5. Deploying to SPCS
 
-**What you'll learn:** How to deploy containerized apps to Snowpark Container Services.
+**What you'll learn:** How to deploy containerized apps to Snowpark Container Services using CoCo.
 
 ### Prerequisites for Deployment
 
@@ -202,189 +202,93 @@ authenticator = "SNOWFLAKE_JWT"    # Must be uppercase
 private_key_file = "/path/to/rsa_key.p8"  # Not "private_key_path"
 ```
 
-Test your connection:
-```bash
-snow connection test -c my-connection
-```
-
 ### Step 1: Set up SPCS infrastructure
 
 ```
-> Help me set up SPCS infrastructure for this app - I need a compute pool 
-  and image repository
+> Help me set up SPCS infrastructure for this app - I need a compute pool, 
+  image repository, and warehouse
 ```
 
-CoCo will generate `deploy/setup.sql`. Run it in Snowsight or via CoCo:
+CoCo will create the SQL and run it in Snowflake. Wait for the compute pool to be ready:
 
 ```
-> Run the setup.sql script in Snowflake
+> Check if my compute pool is ready
 ```
 
-**Wait for the compute pool to be ready** before proceeding:
-```sql
-DESCRIBE COMPUTE POOL REACT_APP_POOL;
--- Wait until "state" shows ACTIVE or IDLE (can take 2-5 minutes)
-```
+### Step 2: Log in to the image registry
 
-### Step 2: Build and push Docker images
-
-Get your image repository URL:
-
-```sql
-SHOW IMAGE REPOSITORIES LIKE 'REACT_APP_REPO' IN SCHEMA REACT_APP_DB.SPCS;
--- Copy the "repository_url" value
-```
-
-Log in to the Snowflake registry using Snow CLI:
+This step requires Snow CLI:
 
 ```bash
 snow spcs image-registry login --connection my-connection
 ```
 
-> **Note:** This is the recommended method as it works with all authentication types including key-pair auth.
+> **Why Snow CLI?** The registry login command handles all authentication types including key-pair auth, and stores credentials for Docker to use.
 
-Build and push images:
-
-```bash
-# Set your repository URL
-export REPO_URL=<your-repository-url>
-
-# Backend
-docker build --platform linux/amd64 -t $REPO_URL/backend:latest ./backend
-docker push $REPO_URL/backend:latest
-
-# Frontend
-docker build --platform linux/amd64 -t $REPO_URL/frontend:latest ./frontend
-docker push $REPO_URL/frontend:latest
-```
-
-> **Important for Apple Silicon (M1/M2/M3) users:** The `--platform linux/amd64` flag is required because SPCS runs on x86 architecture.
-
-### Step 3: Create the service
+### Step 3: Build and push Docker images
 
 ```
-> Generate the SPCS service definition that runs both frontend and backend containers
+> Build and push the Docker images to my SPCS image repository
 ```
 
-CoCo generates `deploy/service.sql`. Review and run it to create the service.
+CoCo will:
+- Get your repository URL from Snowflake
+- Build images for the correct platform (linux/amd64)
+- Push both frontend and backend images
 
-**Key configuration notes:**
+### Step 4: Deploy the service
 
-1. **QUERY_WAREHOUSE is required** if your service executes Snowflake queries:
-   ```sql
-   CREATE SERVICE REACT_APP_SERVICE
-       IN COMPUTE POOL REACT_APP_POOL
-       FROM SPECIFICATION $$ ... $$
-       QUERY_WAREHOUSE = REACT_APP_WH;  -- Required for backend queries
-   ```
-
-2. **Container networking:** In SPCS, containers in the same service communicate via `localhost`, not container names. The frontend's nginx config uses:
-   ```nginx
-   # SPCS containers share localhost
-   proxy_pass http://localhost:8000;
-   ```
-   This is different from Docker Compose where you'd use `http://backend:8000`.
-
-### Step 4: Access your app
-
-Check the service status:
-```sql
-SELECT SYSTEM$GET_SERVICE_STATUS('REACT_APP_SERVICE');
--- Wait for both containers to show "READY"
+```
+> Deploy the React app as an SPCS service
 ```
 
-Get your app URL:
-```sql
-SHOW ENDPOINTS IN SERVICE REACT_APP_SERVICE;
+CoCo will create and run the service definition with the correct configuration (warehouse, networking, etc.).
+
+### Step 5: Access your app
+
+```
+> What's the URL for my deployed app?
 ```
 
-The `ingress_url` for the `frontend` endpoint is your live application!
+CoCo will query the service endpoints and give you the public URL.
 
 ---
 
 ## 6. Troubleshooting
 
-**What you'll learn:** How to debug issues with CoCo's help.
+When something goes wrong, ask CoCo for help:
 
-### Debugging Commands
-
-Check service status (shows container states):
-```sql
-SELECT SYSTEM$GET_SERVICE_STATUS('REACT_APP_SERVICE');
+```
+> My SPCS service isn't working. Can you check the status and logs?
 ```
 
-View container logs:
-```sql
--- Backend logs
-SELECT SYSTEM$GET_SERVICE_LOGS('REACT_APP_SERVICE', '0', 'backend', 100);
-
--- Frontend logs  
-SELECT SYSTEM$GET_SERVICE_LOGS('REACT_APP_SERVICE', '0', 'frontend', 100);
+```
+> The frontend is returning a 502 error. Help me debug.
 ```
 
-### Common Issues
-
-**Container shows FAILED status:**
-
-Check the logs for the specific container. Common causes:
-- Missing environment variables
-- Image not found (check repository path)
-- Port conflicts
-
-**Frontend can't reach backend (502 Bad Gateway):**
-
-SPCS containers in the same service share `localhost`. Ensure nginx.conf uses:
-```nginx
-proxy_pass http://localhost:8000;  # NOT http://backend:8000
+```
+> I'm getting "unauthorized" when pushing images. How do I fix this?
 ```
 
-**Backend returns 500 Internal Server Error:**
+CoCo can run diagnostic queries, check container logs, and suggest fixes.
 
-Usually means the service can't execute queries. Add `QUERY_WAREHOUSE`:
-```sql
-ALTER SERVICE REACT_APP_SERVICE SET QUERY_WAREHOUSE = REACT_APP_WH;
-```
+### Quick Reference
 
-**"host not found in upstream" error:**
-
-This nginx error means the config is trying to resolve a hostname. In SPCS, use `localhost` instead of container names.
-
-**Image push fails with "unauthorized":**
-
-Use Snow CLI for authentication:
-```bash
-snow spcs image-registry login --connection my-connection
-```
-
-**Compute pool stuck in STARTING:**
-
-Compute pools can take 2-5 minutes to provision. Check status:
-```sql
-DESCRIBE COMPUTE POOL REACT_APP_POOL;
-```
-
-If stuck for more than 10 minutes, check your account's compute pool quota.
-
-**Service won't start:**
-```
-> My SPCS service status shows PENDING. How do I debug this?
-```
-
-CoCo will help you analyze logs and identify the issue.
+| Issue | Ask CoCo |
+|-------|----------|
+| Service won't start | "Check my SPCS service status and logs" |
+| 502 Bad Gateway | "Debug the frontend container logs" |
+| 500 Internal Server Error | "Check backend logs and service configuration" |
+| Image push fails | "Help me authenticate with the image registry" |
+| Compute pool stuck | "Check my compute pool status" |
 
 ### Redeploying After Changes
 
-If you need to update your containers:
-
-```bash
-# Rebuild and push new images
-docker build --platform linux/amd64 -t $REPO_URL/backend:latest ./backend
-docker push $REPO_URL/backend:latest
-
-# Restart the service to pull new images
-ALTER SERVICE REACT_APP_SERVICE SUSPEND;
-ALTER SERVICE REACT_APP_SERVICE RESUME;
 ```
+> I updated the code. Rebuild and redeploy the app.
+```
+
+CoCo will rebuild the images, push them, and restart the service.
 
 ---
 
