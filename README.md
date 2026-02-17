@@ -19,58 +19,71 @@ By the end of this quickstart, you'll:
 
 ---
 
-## 0. Installing Snowflake CLI and Cortex Code CLI
+## 0. Installing Cortex Code CLI
 
-Before we begin, you'll need to install the Snowflake CLI (Snow CLI) and Cortex Code CLI.
+Before we begin, you'll need to install Cortex Code CLI and configure a Snowflake connection.
 
-### Step 1: Install Snow CLI
+### Step 1: Install Cortex Code CLI
 
-Snow CLI is Snowflake's command-line tool for managing Snowflake resources.
+Cortex Code CLI (CoCo) is an AI-powered coding assistant that integrates with Snowflake.
 
-**macOS / Linux:**
+**macOS (Apple Silicon):**
 ```bash
-pip install snowflake-cli
+curl -fsSL https://downloads.snowflake.com/cortex-code/latest/cortex-darwin-arm64 -o /usr/local/bin/cortex
+chmod +x /usr/local/bin/cortex
 ```
 
-**Windows:**
+**macOS (Intel):**
 ```bash
-pip install snowflake-cli
+curl -fsSL https://downloads.snowflake.com/cortex-code/latest/cortex-darwin-x64 -o /usr/local/bin/cortex
+chmod +x /usr/local/bin/cortex
+```
+
+**Linux:**
+```bash
+curl -fsSL https://downloads.snowflake.com/cortex-code/latest/cortex-linux-x64 -o /usr/local/bin/cortex
+chmod +x /usr/local/bin/cortex
+```
+
+**Windows (PowerShell as Administrator):**
+```powershell
+Invoke-WebRequest -Uri "https://downloads.snowflake.com/cortex-code/latest/cortex-win-x64.exe" -OutFile "$env:LOCALAPPDATA\Programs\cortex.exe"
+# Add to PATH or run from that location
 ```
 
 Verify the installation:
 ```bash
-snow --version
+cortex --version
 ```
 
 ### Step 2: Configure a Snowflake Connection
 
-Create a connection to your Snowflake account:
+Cortex Code uses connections defined in `~/.snowflake/config.toml`. Create this file with your connection details:
 
 ```bash
-snow connection add
+mkdir -p ~/.snowflake
 ```
 
-You'll be prompted for:
-- **Connection name**: A friendly name (e.g., `my-account`)
-- **Account identifier**: Your Snowflake account (e.g., `abc12345.us-east-1`)
-- **User**: Your Snowflake username
-- **Password**: Your Snowflake password (or choose a different authenticator)
-- **Role**: `ACCOUNTADMIN` (or your preferred role)
-- **Warehouse**: `COMPUTE_WH` (or your preferred warehouse)
-- **Database**: `SNOWFLAKE_SAMPLE_DATA` (optional)
-- **Schema**: `TPCH_SF1` (optional)
+Edit `~/.snowflake/config.toml`:
 
-Test the connection:
+```toml
+[connections.my-account]
+account = "abc12345.us-east-1"
+user = "your_username"
+password = "your_password"
+role = "ACCOUNTADMIN"
+warehouse = "COMPUTE_WH"
+database = "SNOWFLAKE_SAMPLE_DATA"
+schema = "TPCH_SF1"
+```
+
+Verify the connection works:
 ```bash
-snow connection test -c my-account
+cortex connections list
+cortex connections set my-account
 ```
 
-Set it as your default connection:
-```bash
-snow connection set-default my-account
-```
-
-### Step 2b: Configure Key-Pair Authentication (Recommended)
+### Step 2b: Key-Pair Authentication (Recommended)
 
 Key-pair authentication is more secure than password authentication and is recommended for production use.
 
@@ -98,33 +111,18 @@ Copy your public key (without the header/footer lines):
 cat ~/.snowflake/keys/rsa_key.pub | grep -v "PUBLIC KEY" | tr -d '\n'
 ```
 
-Then run this SQL in Snowflake (Snowsight or SnowSQL):
+Then run this SQL in Snowflake (Snowsight):
 
 ```sql
 ALTER USER your_username SET RSA_PUBLIC_KEY='MIIBIjANBgkqh...your-key-here...';
 ```
 
-#### Configure Snow CLI with Key-Pair Auth
+#### Configure the Connection with Key-Pair Auth
 
-Add a new connection using key-pair authentication:
-
-```bash
-snow connection add \
-  --connection-name my-account-keypair \
-  --account abc12345.us-east-1 \
-  --user your_username \
-  --authenticator SNOWFLAKE_JWT \
-  --private-key-file ~/.snowflake/keys/rsa_key.p8 \
-  --role ACCOUNTADMIN \
-  --warehouse COMPUTE_WH \
-  --database SNOWFLAKE_SAMPLE_DATA \
-  --schema TPCH_SF1
-```
-
-Or edit `~/.snowflake/config.toml` directly:
+Edit `~/.snowflake/config.toml`:
 
 ```toml
-[connections.my-account-keypair]
+[connections.my-account]
 account = "abc12345.us-east-1"
 user = "your_username"
 authenticator = "SNOWFLAKE_JWT"
@@ -133,13 +131,6 @@ role = "ACCOUNTADMIN"
 warehouse = "COMPUTE_WH"
 database = "SNOWFLAKE_SAMPLE_DATA"
 schema = "TPCH_SF1"
-```
-
-Test and set as default:
-
-```bash
-snow connection test -c my-account-keypair
-snow connection set-default my-account-keypair
 ```
 
 #### Using an Encrypted Private Key (Optional)
@@ -160,53 +151,10 @@ export PRIVATE_KEY_PASSPHRASE='your-passphrase'
 Or in `config.toml`:
 
 ```toml
-[connections.my-account-keypair]
+[connections.my-account]
 # ... other settings ...
 private_key_file = "~/.snowflake/keys/rsa_key_encrypted.p8"
 private_key_file_pwd = "your-passphrase"  # Or use env var for security
-```
-
-### Step 3: Install Cortex Code CLI
-
-Cortex Code CLI (CoCo) is an AI-powered coding assistant that integrates with Snowflake.
-
-```bash
-snow cortex code install
-```
-
-This downloads and installs the Cortex Code CLI binary.
-
-Verify the installation:
-```bash
-cortex --version
-```
-
-### Alternative: Manual Installation
-
-If the `snow cortex code install` command isn't available, you can install manually:
-
-**macOS (Apple Silicon):**
-```bash
-curl -fsSL https://downloads.snowflake.com/cortex-code/latest/cortex-darwin-arm64 -o /usr/local/bin/cortex
-chmod +x /usr/local/bin/cortex
-```
-
-**macOS (Intel):**
-```bash
-curl -fsSL https://downloads.snowflake.com/cortex-code/latest/cortex-darwin-x64 -o /usr/local/bin/cortex
-chmod +x /usr/local/bin/cortex
-```
-
-**Linux:**
-```bash
-curl -fsSL https://downloads.snowflake.com/cortex-code/latest/cortex-linux-x64 -o /usr/local/bin/cortex
-chmod +x /usr/local/bin/cortex
-```
-
-**Windows (PowerShell as Administrator):**
-```powershell
-Invoke-WebRequest -Uri "https://downloads.snowflake.com/cortex-code/latest/cortex-win-x64.exe" -OutFile "$env:LOCALAPPDATA\Programs\cortex.exe"
-# Add to PATH or run from that location
 ```
 
 ---
@@ -625,8 +573,29 @@ snowflake-react-spcs/
 
 ---
 
+## Optional: Snow CLI
+
+While not required for this quickstart, [Snowflake CLI (Snow CLI)](https://docs.snowflake.com/en/developer-guide/snowflake-cli/index) is useful for other Snowflake workflows like Native Apps, Snowpark development, and Streamlit deployments.
+
+**Install Snow CLI:**
+```bash
+pip install snowflake-cli
+```
+
+Snow CLI provides an interactive connection wizard and can manage multiple Snowflake projects:
+```bash
+snow connection add        # Interactive connection setup
+snow connection test       # Test a connection
+snow connection list       # List all connections
+```
+
+Connections created with Snow CLI are stored in `~/.snowflake/config.toml` and are automatically available to Cortex Code.
+
+---
+
 ## Resources
 
-- [Cortex Code CLI Documentation](https://docs.snowflake.com/en/developer-guide/snowflake-cli)
+- [Cortex Code CLI Documentation](https://docs.snowflake.com/en/developer-guide/cortex-code)
+- [Snowflake CLI Documentation](https://docs.snowflake.com/en/developer-guide/snowflake-cli/index)
 - [Snowpark Container Services Guide](https://docs.snowflake.com/en/developer-guide/snowpark-container-services/overview)
 - [Snowpark Python Developer Guide](https://docs.snowflake.com/en/developer-guide/snowpark/python/index)
