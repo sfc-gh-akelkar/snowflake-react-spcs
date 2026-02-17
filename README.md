@@ -54,57 +54,6 @@ The wizard will prompt you to:
 
 ---
 
-## VS Code Setup
-
-Open the project in VS Code and install recommended extensions for the best experience.
-
-### Recommended Extensions
-
-When you open the project, VS Code will prompt you to install recommended extensions. Or install manually:
-
-| Extension | Purpose |
-|-----------|---------|
-| **Snowflake** (`snowflake.snowflake-vsc`) | Run SQL, browse objects, view results |
-| **Python** (`ms-python.python`) | Python IntelliSense and debugging |
-| **Pylance** (`ms-python.vscode-pylance`) | Fast Python language server |
-| **ESLint** (`dbaeumer.vscode-eslint`) | JavaScript/React linting |
-| **Prettier** (`esbenp.prettier-vscode`) | Code formatting |
-| **Docker** (`ms-azuretools.vscode-docker`) | Dockerfile support, container management |
-
-Install all at once via Command Palette:
-```
-> Extensions: Show Recommended Extensions
-```
-
-### Using the Snowflake Extension
-
-1. Click the Snowflake icon in the sidebar
-2. Click **"Add Connection"** and enter your credentials
-3. Browse databases, schemas, and tables visually
-4. Run SQL directly in VS Code with `Cmd+Enter` / `Ctrl+Enter`
-
-### Running Cortex Code in VS Code Terminal
-
-Open the integrated terminal (`` Ctrl+` ``) and run:
-
-```bash
-cortex
-```
-
-**Pro tip:** Use VS Code's split terminal to have Cortex Code open alongside your regular shell:
-- `Cmd+\` (macOS) or `Ctrl+\` (Windows/Linux) to split
-- Run `cortex` in one pane, use the other for git/npm/docker commands
-
-### Debugging with VS Code
-
-The project includes debug configurations. Press `F5` or go to **Run and Debug** to see:
-
-- **Backend: FastAPI** – Debug the Python API with breakpoints
-- **Frontend: Vite Dev** – Debug the React app
-- **Full Stack** – Launch both simultaneously
-
----
-
 ## 1. Getting Started with Cortex Code CLI
 
 Cortex Code CLI (CoCo) is an AI-powered assistant that helps you write code, explore data, and deploy applications to Snowflake.
