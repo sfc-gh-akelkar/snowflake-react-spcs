@@ -307,35 +307,6 @@ Now that you've built and deployed your first app, try these extensions:
 
 ---
 
-## Alternative: DevContainer for Workshops
-
-If you're running a workshop or want a fully isolated development environment, use VS Code's DevContainer feature. This provides a pre-configured environment with all tools installed.
-
-### Setup
-
-1. Install the **Dev Containers** extension in VS Code
-2. Clone and open the project:
-   ```bash
-   git clone https://github.com/sfc-gh-akelkar/snowflake-react-spcs.git
-   code snowflake-react-spcs
-   ```
-3. When prompted, click **"Reopen in Container"** (or use Command Palette: `Dev Containers: Reopen in Container`)
-4. Wait 2-3 minutes for the container to build
-
-### What's Included
-
-The DevContainer automatically:
-- Installs Node.js 20, Python 3.10, and Docker
-- Installs Snow CLI and Cortex Code CLI
-- Installs all frontend and backend dependencies
-- Mounts your `~/.snowflake` config (if it exists)
-
-Once ready, open a terminal and run `cortex` to start.
-
-> **Note:** DevContainers require Docker Desktop to be running.
-
----
-
 ## Project Structure
 
 ```
