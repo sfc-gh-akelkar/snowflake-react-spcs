@@ -179,55 +179,7 @@ CoCo will analyze the error, identify the root cause, and fix the code.
 
 ---
 
-## 5. Local Development
-
-**What you'll learn:** Running and testing your app locally.
-
-### Setting up environment variables
-
-Create a `.env` file (CoCo won't create files with secrets, so do this manually):
-
-```bash
-# .env (do not commit this file!)
-SNOWFLAKE_ACCOUNT=your-account
-SNOWFLAKE_USER=your-username
-SNOWFLAKE_PASSWORD=your-password
-SNOWFLAKE_WAREHOUSE=COMPUTE_WH
-```
-
-### Running with Docker Compose
-
-```
-> Help me run this app locally with Docker Compose
-```
-
-CoCo will generate a `docker-compose.yaml` and guide you through:
-
-```bash
-docker compose up --build
-```
-
-Visit http://localhost:3000 to see your dashboard.
-
-### Running without Docker (for development)
-
-**Backend:**
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn app:app --reload --port 8000
-```
-
-**Frontend:**
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
----
-
-## 6. Deploying to SPCS
+## 5. Deploying to SPCS
 
 **What you'll learn:** How to deploy containerized apps to Snowpark Container Services.
 
@@ -350,7 +302,7 @@ The `ingress_url` for the `frontend` endpoint is your live application!
 
 ---
 
-## 7. Troubleshooting
+## 6. Troubleshooting
 
 **What you'll learn:** How to debug issues with CoCo's help.
 
