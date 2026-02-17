@@ -183,13 +183,11 @@ CoCo will analyze the error, identify the root cause, and fix the code.
 
 ### Prerequisites for Deployment
 
-Before deploying to SPCS, ensure you have:
+Before deploying, ensure **Docker Desktop** is running and **Snow CLI** is installed:
 
-- **Docker Desktop** installed and running
-- **Snow CLI** installed (required for registry authentication):
-  ```bash
-  pip install snowflake-cli
-  ```
+```bash
+pip install snowflake-cli
+```
 
 **If using key-pair authentication**, your `~/.snowflake/connections.toml` must have:
 ```toml
@@ -215,13 +213,11 @@ CoCo will create the SQL and run it in Snowflake. Wait for the compute pool to b
 
 ### Step 2: Log in to the image registry
 
-This step requires Snow CLI:
-
-```bash
-snow spcs image-registry login --connection my-connection
+```
+> Log in to the Snowflake image registry
 ```
 
-> **Why Snow CLI?** The registry login command handles all authentication types including key-pair auth, and stores credentials for Docker to use.
+CoCo will run the Snow CLI command to authenticate Docker with your Snowflake registry.
 
 ### Step 3: Build and push Docker images
 
