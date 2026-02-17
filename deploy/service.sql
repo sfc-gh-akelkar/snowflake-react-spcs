@@ -45,10 +45,11 @@ CREATE SERVICE REACT_APP_SERVICE
               memory: 512Mi
       endpoints:
         - name: frontend
-          port: 3000
+          port: 80
           public: true
     $$
     EXTERNAL_ACCESS_INTEGRATIONS = ()
+    QUERY_WAREHOUSE = REACT_APP_WH
     MIN_INSTANCES = 1
     MAX_INSTANCES = 2;
 
